@@ -6,5 +6,5 @@ class Subtarefa{
   String descricao;
   bool concluido = false;
 
-  Subtarefa({required this.descricao,required this.concluido,required this.idTarefa});
+  Subtarefa({required this.id,required this.descricao,required this.concluido,required this.idTarefa});
 }

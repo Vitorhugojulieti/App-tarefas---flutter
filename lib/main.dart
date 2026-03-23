@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_despesas/providers/SubtarefaProvider.dart';
 import 'package:projeto_despesas/providers/TarefaProvider.dart';
 import 'package:projeto_despesas/providers/UsuarioProvider.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,9 @@ void main()async {
         ChangeNotifierProvider(
           create: (_) => Usuarioprovider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => Subtarefaprovider(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -27,7 +31,6 @@ void main()async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,7 +42,6 @@ class MyApp extends StatelessWidget {
           secondary: Color.fromRGBO(248, 248, 255, 1)
         ),
       ),
-      //home:LoginScreen() ,//const MyHomePage(title: 'Flutter Demo Home Page'),
       initialRoute: '/',
       routes: {
         '/':(context)=> const LoginScreen(),

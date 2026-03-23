@@ -187,6 +187,7 @@ class _ModalAddTarefa extends State<ModalAddTarefa> {
                                 concluido: false,
                                 descricao: 'Teste',
                                 idTarefa: 1,
+                                id: 0
                               ),
                             ),
                           ],
@@ -266,6 +267,7 @@ class _ModalAddTarefa extends State<ModalAddTarefa> {
                         descricao: _descricaoController.text,
                         data: _dataTarefa!,
                         hora: _horaController.text,
+                        porcentagemConcluida: 0
                       ),
                     );
                     if (resultado) {

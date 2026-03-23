@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
 import '../models/Tarefa.dart';
 import '../classes/ServicoSessao.dart';
@@ -42,6 +41,7 @@ class Tarefaprovider with ChangeNotifier {
             descricao: t['descricao'],
             data: formato.parse(t['data_tarefa']),
             hora: t['hora'],
+            porcentagemConcluida:0//t['porcentagem']
           );
           tarefa.concluido = t['concluido'] == "S" ? true : false;
           tarefa.idUsuario = t['idusuario'];
@@ -96,7 +96,6 @@ class Tarefaprovider with ChangeNotifier {
           "descricao": tarefa.descricao,
           "data_tarefa": DateFormat('yyyy-MM-dd').format(tarefa.data),
           "hora": tarefa.hora,
-          "idusuario": idUsuario,
         },
       );
       debugPrint(response.data.toString());
@@ -166,6 +165,14 @@ class Tarefaprovider with ChangeNotifier {
       return false;
     } catch (e) {
       return false;
+    }
+  }
+
+  void atualizaPorcentagem(int idTarefa,double porcentagem){
+    Tarefa? tarefa = tarefas.firstWhere((t)=> t.id == idTarefa);
+
+    if(tarefa !=null){
+      tarefa.porcentagemConcluida = porcentagem;
     }
   }
 }

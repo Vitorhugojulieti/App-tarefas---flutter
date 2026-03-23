@@ -1,9 +1,78 @@
 import 'package:flutter/material.dart';
 import '../models/Subtarefa.dart';
+import 'package:provider/provider.dart';
+import '../providers/SubtarefaProvider.dart';
+import '../providers/TarefaProvider.dart';
 
 class SubtarefaComponent extends StatelessWidget{
   SubtarefaComponent(this.subtarefa);
   Subtarefa subtarefa;
+  
+  _removeSubTarefa(BuildContext context, int idSubtarefa) async {
+    final bool retorno = await context.read<Subtarefaprovider>().removeSubtarefa(
+     idSubtarefa
+    );
+
+    if (retorno) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Subtarfa removida com sucesso!',
+            style: TextStyle(color: Colors.white),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.greenAccent,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Erro ao remover subtarefa!',
+            style: TextStyle(color: Colors.white),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
+  _checkSubTarefa(BuildContext context, int idSubtarefa)async{
+    final bool retorno = await context.read<Subtarefaprovider>().checkSubtarefa(
+     idSubtarefa
+    );
+
+    if (retorno) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Subtarfa concluida com sucesso!',
+            style: TextStyle(color: Colors.white),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.greenAccent,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Erro ao concluir subtarefa!',
+            style: TextStyle(color: Colors.white),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +81,19 @@ class SubtarefaComponent extends StatelessWidget{
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Radio(value: subtarefa.concluido),
+          Checkbox(
+            value: subtarefa.concluido,
+            onChanged: (value){
+              _checkSubTarefa(context,subtarefa.id);
+            },
+          ),
           Expanded(
             child:Text(subtarefa.descricao) ,
           ),
           IconButton(
-              onPressed: null,
+              onPressed:(){
+                _removeSubTarefa(context, subtarefa.id);
+              },
               icon: Icon(Icons.cancel,color: Colors.red),
           ),
         ],

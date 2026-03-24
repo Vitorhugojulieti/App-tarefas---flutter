@@ -25,6 +25,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
 
   _addSubTarefa(BuildContext context) async {
     final bool retorno = await context.read<Subtarefaprovider>().addSubtarefa(
+      context,
       new Subtarefa(
         id: 0,
         descricao: _descricaoSubtarefaController.text,
@@ -34,23 +35,36 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
     );
 
     if (retorno) {
+      if (_porcentagem.toInt() == 100) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Tarefa concluida com sucesso!',
+              style: TextStyle(color: Colors.white),
+            ),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+      }else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Subtarefa adicionada com sucesso!',
+              style: TextStyle(color: Colors.white),
+            ),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+      }
       _descricaoSubtarefaController.text = '';
       setState(() {
-        _visivel =false;
+        _visivel = false;
       });
-      // atualiza porcentagem 
-     // context.read<Tarefaprovider>().atualizaPorcentagem(widget.tarefa.id, _porcentagem);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Subtarfa adicionada com sucesso!',
-            style: TextStyle(color: Colors.white),
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.greenAccent,
-        ),
-      );
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -66,26 +80,11 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
     }
   }
 
-  _verificaConcluida(){
-    if(_porcentagem == 100){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Tarefa concluida com sucesso!',
-            style: TextStyle(color: Colors.white),
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.greenAccent,
-        ),
-      );
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+    Future.microtask(() async {
       context.read<Subtarefaprovider>().carregarSubtarefas(
         idtarefa: widget.tarefa.id,
       );
@@ -101,8 +100,15 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
   Widget build(BuildContext context) {
     final provider = context.watch<Subtarefaprovider>();
     final subtarefas = provider.subtarefas;
-    debugPrint(provider.totalSubtarefasConcluidas.toString());
-    _porcentagem = (provider.totalSubtarefasConcluidas*100)/provider.subtarefas.length;
+
+    // if (provider.subtarefas.isNotEmpty) {
+    //   _porcentagem =
+    //       (provider.totalSubtarefasConcluidas * 100) /
+    //       provider.subtarefas.length;
+    // } else {
+    //   _porcentagem = 0;
+    // }
+
 
     return Scaffold(
       appBar: AppBar(
@@ -122,7 +128,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                   TextFormField(controller: _descricaoController),
                   TextFormField(controller: _dateController),
                   TextFormField(controller: _horaController),
-                  SizedBox(height: 12)
+                  SizedBox(height: 12),
                 ],
               ),
             ),
@@ -143,10 +149,12 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                         Row(
                           children: [
                             Expanded(
-                              child: LinearProgressIndicator(value: _porcentagem/100),
+                              child: LinearProgressIndicator(
+                                value: provider.porcentagem/ 100,
+                              ),
                             ),
                             SizedBox(width: 10),
-                            Text("${_porcentagem.toInt()}%"),
+                            Text("${provider.porcentagem.toInt()}%"),
                           ],
                         ),
 
@@ -160,53 +168,51 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                             },
                           ),
                         ),
-
-                        Visibility(
-                          visible: _visivel,
-                          child: Form(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _descricaoSubtarefaController,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.check,color: Colors.green),
-                                  onPressed: (){
-                                    _addSubTarefa(context);
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.cancel,color: Colors.red),
-                                  onPressed: (){
-                                    setState(() {
-                                      _visivel = false;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        TextButton.icon(
-                          onPressed: (){
-                             setState(() {
-                               _visivel = true;
-                             });
-                          },
-                          label: Text('Adicionar subtarefa'),
-                          icon: Icon(
-                            Icons.add,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
                         SizedBox(height: 30),
                       ],
                     ),
                   )
                 : Text('Nenhuma subtarefa cadastrada'),
+            Visibility(
+              visible: _visivel,
+              child: Form(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _descricaoSubtarefaController,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.check, color: Colors.green),
+                      onPressed: () {
+                        _addSubTarefa(context);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.cancel, color: Colors.red),
+                      onPressed: () {
+                        setState(() {
+                          _visivel = false;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  _visivel = true;
+                });
+              },
+              label: Text('Adicionar subtarefa'),
+              icon: Icon(
+                Icons.add,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,

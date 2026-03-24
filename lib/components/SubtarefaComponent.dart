@@ -10,6 +10,7 @@ class SubtarefaComponent extends StatelessWidget{
   
   _removeSubTarefa(BuildContext context, int idSubtarefa) async {
     final bool retorno = await context.read<Subtarefaprovider>().removeSubtarefa(
+      context,
      idSubtarefa
     );
 
@@ -42,6 +43,7 @@ class SubtarefaComponent extends StatelessWidget{
 
   _checkSubTarefa(BuildContext context, int idSubtarefa)async{
     final bool retorno = await context.read<Subtarefaprovider>().checkSubtarefa(
+      context,
      idSubtarefa
     );
 

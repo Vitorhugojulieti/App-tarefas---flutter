@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:projeto_despesas/models/Subtarefa.dart';
 import 'package:dio/dio.dart';
 import '../models/Subtarefa.dart';
+import '../providers/TarefaProvider.dart';
+import 'package:provider/provider.dart';
 
 class Subtarefaprovider with ChangeNotifier {
   List<Subtarefa> subtarefas = [];
   bool isLoading = false;
+  double porcentagem = 0;
+
 
   void carregarSubtarefas({required int idtarefa}) async {
     isLoading = true;
@@ -30,14 +34,23 @@ class Subtarefaprovider with ChangeNotifier {
         );
       }
       isLoading = false;
+              // porcentagem 
+      if (subtarefas.isNotEmpty) {
+        porcentagem =
+            (totalSubtarefasConcluidas * 100) /
+            subtarefas.length;
+      } else {
+        porcentagem = 0;
+        }
       notifyListeners();
       debugPrint(subtarefas.toString());
+      
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  Future<bool> addSubtarefa(Subtarefa subtarefa) async {
+  Future<bool> addSubtarefa(BuildContext context,Subtarefa subtarefa) async {
     try {
       final dio = new Dio();
       final response = await dio.post(
@@ -51,6 +64,8 @@ class Subtarefaprovider with ChangeNotifier {
 
       if (response.data['retorno'] == 'sucesso') {
         subtarefas.add(subtarefa);
+        calculaPorcentagem();
+        context.read<Tarefaprovider>().atualizaPorcentagem(subtarefa.idTarefa,porcentagem.toInt());
         notifyListeners();
         return true;
       }
@@ -61,7 +76,8 @@ class Subtarefaprovider with ChangeNotifier {
     }
   }
 
-  Future<bool> removeSubtarefa(int idSubtarefa) async {
+  Future<bool> removeSubtarefa(BuildContext context, int idSubtarefa) async {
+    final Subtarefa subtarefa = subtarefas.firstWhere((sub) => sub.id == idSubtarefa);
     try {
       final dio = new Dio();
       final response = await dio.post(
@@ -71,6 +87,8 @@ class Subtarefaprovider with ChangeNotifier {
 
       if (response.data['retorno'] == 'sucesso') {
         subtarefas.removeWhere((sub) => sub.id == idSubtarefa);
+        calculaPorcentagem();
+        context.read<Tarefaprovider>().atualizaPorcentagem(subtarefa.idTarefa,porcentagem.toInt());
         notifyListeners();
         return true;
       }
@@ -81,7 +99,7 @@ class Subtarefaprovider with ChangeNotifier {
     }
   }
 
-  Future<bool> checkSubtarefa(int idSubtarefa) async {
+  Future<bool> checkSubtarefa(BuildContext context,int idSubtarefa) async {
     final Subtarefa subtarefa = subtarefas.firstWhere((sub) => sub.id == idSubtarefa);
     try {
       final dio = new Dio();
@@ -95,8 +113,9 @@ class Subtarefaprovider with ChangeNotifier {
       );
 
       if (response.data['retorno'] == 'sucesso') {
-        //subtarefas.removeWhere((sub) => sub.id == idSubtarefa);
         subtarefa.concluido = !subtarefa.concluido;
+        calculaPorcentagem();
+        context.read<Tarefaprovider>().atualizaPorcentagem(subtarefa.idTarefa,porcentagem.toInt());
         notifyListeners();
         return true;
       }
@@ -109,5 +128,20 @@ class Subtarefaprovider with ChangeNotifier {
 
   int get totalSubtarefasConcluidas{
     return subtarefas.where((sub) => sub.concluido).length;
+  }
+
+  void calculaPorcentagem(){
+    if (subtarefas.isNotEmpty) {
+      porcentagem =
+          (totalSubtarefasConcluidas * 100) /
+          subtarefas.length;
+    } else {
+      porcentagem = 0;
+    }
+
+    if(porcentagem == 100){
+     //concluir a tarefa
+     // context.read<Tarefaprovider>().atualizaPorcentagem(subtarefa.idTarefa,porcentagem.toInt());
+    }
   }
 }

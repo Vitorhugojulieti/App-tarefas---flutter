@@ -29,23 +29,28 @@ class Tarefaprovider with ChangeNotifier {
       );
       final listaResponse = response.data['items'];
       for (var t in listaResponse) {
-        // debugPrint('aqui');
+              debugPrint('teste aq');
+
         if (t['idtarefa'] != null &&
             t['descricao'] != null &&
             t['hora'] != null &&
             t['data_tarefa'] != null &&
-            t['concluido'] != null &&
-            t['idusuario'] != null) {
+            t['concluido'] != null ) {
+            
+            //&&t['idusuario'] != null
           Tarefa tarefa = Tarefa(
             id: t['idtarefa'],
             descricao: t['descricao'],
             data: formato.parse(t['data_tarefa']),
             hora: t['hora'],
-            porcentagemConcluida:0//t['porcentagem']
+            porcentagemConcluida:t['porcentagem'] ?? 0
           );
           tarefa.concluido = t['concluido'] == "S" ? true : false;
           tarefa.idUsuario = t['idusuario'];
           tarefas.add(tarefa);
+        }else{
+         debugPrint(t['idtarefa'].toString());
+
         }
       }
       tarefasAgrupadas = agrupaTarefas(tarefas);
@@ -117,15 +122,14 @@ class Tarefaprovider with ChangeNotifier {
   }
 
   Future<bool> onCheck(int idTarefa) async {
-    final dio = Dio();
-    Tarefa? tarefa = tarefas.firstWhere((tarefa) => tarefa.id == idTarefa);
-    DateTime dia = tarefa.data;
-    //debugPrint(tarefa.toString());
     try {
+      final dio = Dio();
+      Tarefa? tarefa = tarefas.firstWhere((tarefa) => tarefa.id == idTarefa);
+      DateTime dia = tarefa.data;
       final response = await dio.post(
         'https://oracleapex.com/ords/vitor_space/Tarefas/tarefas/',
         data: {
-          "operacao": "U",
+          "operacao": "C",
           "idTarefa": idTarefa,
           "concluido": !tarefa.concluido == false ? 'N' : 'S',
         },
@@ -168,11 +172,40 @@ class Tarefaprovider with ChangeNotifier {
     }
   }
 
-  void atualizaPorcentagem(int idTarefa,double porcentagem){
-    Tarefa? tarefa = tarefas.firstWhere((t)=> t.id == idTarefa);
+  Future<bool> atualizaTarefa(Tarefa tarefa)async{
+     try {
+      final dio = Dio();
 
-    if(tarefa !=null){
-      tarefa.porcentagemConcluida = porcentagem;
+      final response = await dio.post(
+        'https://oracleapex.com/ords/vitor_space/Tarefas/tarefas/',
+        data: {
+          "operacao": "U",
+          "idTarefa": tarefa.id,
+          "concluido": tarefa.concluido == false ? 'N' : 'S',
+          "descricao":tarefa.descricao,
+          "data_tarefa": DateFormat('yyyy-MM-dd').format(tarefa.data),
+          "hora":tarefa.hora,
+          "porcentagem":tarefa.porcentagemConcluida
+        },
+      );
+      debugPrint(response.toString());
+      if (response.data['retorno'] == 'sucesso') {
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
     }
+  }
+
+  void atualizaPorcentagem(int idTarefa, int porcentagem){
+    debugPrint(porcentagem.toString());
+
+    Tarefa? tarefa = tarefas.firstWhere((tr)=> tr.id == idTarefa);
+    tarefa.porcentagemConcluida = porcentagem;
+    debugPrint(porcentagem.toString());
+    notifyListeners();
   }
 }

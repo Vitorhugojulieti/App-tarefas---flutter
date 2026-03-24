@@ -5,7 +5,7 @@ class Tarefa {
   String hora = '';
   bool concluido = false;
   int? idUsuario = 0;
-  double porcentagemConcluida = 0.0;
+  int porcentagemConcluida = 0;
 
   Tarefa({required this.id,required this.descricao,required this.data,required this.hora,this.concluido = false, this.idUsuario,required this.porcentagemConcluida});
 }

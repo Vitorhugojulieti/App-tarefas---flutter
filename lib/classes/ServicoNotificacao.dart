@@ -1,5 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:projeto_despesas/models/Tarefa.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -36,7 +36,7 @@ class ServicoNotificacao {
 
   Future<void> _defineTimezone()async{
     tz.initializeTimeZones();
-    final String? timeZoneNome = await FlutterNativeTimezone.getLocalTimezone();
+    final String? timeZoneNome = await FlutterTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(timeZoneNome!));
   }
 

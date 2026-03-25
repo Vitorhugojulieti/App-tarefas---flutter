@@ -1,5 +1,4 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:projeto_despesas/models/Tarefa.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -34,12 +33,12 @@ class ServicoNotificacao {
     await _inicializaNotificacoes();
   }
 
-  Future<void> _defineTimezone()async{
+  Future<void> _defineTimezone() async {
     tz.initializeTimeZones();
-    final String? timeZoneNome = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneNome!));
-  }
 
+    // Define manualmente o timezone (Brasil)
+    tz.setLocalLocation(tz.getLocation('America/Sao_Paulo'));
+  }
   _inicializaNotificacoes()async{
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');//define icone da notificacao
     await localNotificationsPlugin.initialize(

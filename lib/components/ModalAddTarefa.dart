@@ -262,6 +262,7 @@ class _ModalAddTarefa extends State<ModalAddTarefa> {
                       listen: false,
                     );
                     final bool resultado = await provider.addTarefa(
+                      context,
                       new Tarefa(
                         id: 0, //quando buscar o id do banco n precis mais add
                         descricao: _descricaoController.text,

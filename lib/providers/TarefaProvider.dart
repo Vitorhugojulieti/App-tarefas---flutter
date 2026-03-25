@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:projeto_despesas/classes/ServicoNotificacao.dart';
+import 'package:provider/provider.dart';
 import '../models/Tarefa.dart';
 import '../classes/ServicoSessao.dart';
 import 'package:dio/dio.dart';
@@ -88,7 +91,7 @@ class Tarefaprovider with ChangeNotifier {
     return tarefas.where((tarefa) => tarefa.concluido == true).toList();
   }
 
-  Future<bool> addTarefa(Tarefa tarefa) async {
+  Future<bool> addTarefa(BuildContext context, Tarefa tarefa) async {
     final int? idUsuario = await Servicosessao().getUsuarioLogado();
     final dio = Dio();
 
@@ -112,6 +115,8 @@ class Tarefaprovider with ChangeNotifier {
           final List<Tarefa> lista = [tarefa];
           tarefasAgrupadas[tarefa.data] = lista;
         }
+        // criar notificacao
+        context.read<ServicoNotificacao>().agendarNotificacao(tarefa);
         notifyListeners();
         return true;
       }

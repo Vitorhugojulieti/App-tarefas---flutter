@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_despesas/classes/ServicoNotificacao.dart';
 import 'package:projeto_despesas/providers/SubtarefaProvider.dart';
 import 'package:projeto_despesas/providers/TarefaProvider.dart';
 import 'package:projeto_despesas/providers/UsuarioProvider.dart';
@@ -21,6 +22,9 @@ void main()async {
         ),
         ChangeNotifierProvider(
           create: (_) => Subtarefaprovider(),
+        ),
+        Provider<ServicoNotificacao>(
+          create: (_)=> ServicoNotificacao(),
         ),
       ],
       child: const MyApp(),

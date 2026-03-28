@@ -32,9 +32,6 @@ class ListaTarefas extends StatelessWidget {
           final tr = this.tarefas![index];
           return Column(
             children: [
-              Text(
-                'Tarefas do dia: ${DateFormat('dd/MM/yyyy').format(context.read<Tarefaprovider>().diaSelecionado)}',
-              ),
               SizedBox(height: 10),
               Tarefacomponent(tr),
             ],

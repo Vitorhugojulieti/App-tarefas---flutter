@@ -4,15 +4,14 @@ import 'package:provider/provider.dart';
 import '../providers/SubtarefaProvider.dart';
 import '../providers/TarefaProvider.dart';
 
-class SubtarefaComponent extends StatelessWidget{
+class SubtarefaComponent extends StatelessWidget {
   SubtarefaComponent(this.subtarefa);
   Subtarefa subtarefa;
-  
+
   _removeSubTarefa(BuildContext context, int idSubtarefa) async {
-    final bool retorno = await context.read<Subtarefaprovider>().removeSubtarefa(
-      context,
-     idSubtarefa
-    );
+    final bool retorno = await context
+        .read<Subtarefaprovider>()
+        .removeSubtarefa(context, idSubtarefa);
 
     if (retorno) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -41,13 +40,25 @@ class SubtarefaComponent extends StatelessWidget{
     }
   }
 
-  _checkSubTarefa(BuildContext context, int idSubtarefa)async{
-    final bool retorno = await context.read<Subtarefaprovider>().checkSubtarefa(
-      context,
-     idSubtarefa
-    );
+  _checkSubTarefa(BuildContext context, int idSubtarefa) async {
+    final provider = context.read<Subtarefaprovider>();
+    final bool retorno = await provider.checkSubtarefa(context, idSubtarefa);
 
     if (retorno) {
+      if (provider.porcentagem.toInt() == 100) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Tarefa concluida com sucesso!',
+              style: TextStyle(color: Colors.white),
+            ),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+        Navigator.pop(context);
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -74,8 +85,6 @@ class SubtarefaComponent extends StatelessWidget{
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -85,18 +94,16 @@ class SubtarefaComponent extends StatelessWidget{
         children: [
           Checkbox(
             value: subtarefa.concluido,
-            onChanged: (value){
-              _checkSubTarefa(context,subtarefa.id);
+            onChanged: (value) {
+              _checkSubTarefa(context, subtarefa.id);
             },
           ),
-          Expanded(
-            child:Text(subtarefa.descricao) ,
-          ),
+          Expanded(child: Text(subtarefa.descricao)),
           IconButton(
-              onPressed:(){
-                _removeSubTarefa(context, subtarefa.id);
-              },
-              icon: Icon(Icons.cancel,color: Colors.red),
+            onPressed: () {
+              _removeSubTarefa(context, subtarefa.id);
+            },
+            icon: Icon(Icons.cancel, color: Colors.red),
           ),
         ],
       ),

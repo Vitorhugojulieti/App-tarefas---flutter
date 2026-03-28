@@ -113,9 +113,13 @@ class Subtarefaprovider with ChangeNotifier {
       );
 
       if (response.data['retorno'] == 'sucesso') {
+        final tarefaProvider = context.read<Tarefaprovider>();
         subtarefa.concluido = !subtarefa.concluido;
         calculaPorcentagem();
-        context.read<Tarefaprovider>().atualizaPorcentagem(subtarefa.idTarefa,porcentagem.toInt());
+        tarefaProvider.atualizaPorcentagem(subtarefa.idTarefa,porcentagem.toInt());
+        if(porcentagem.toInt() == 100){
+          tarefaProvider.onCheck(subtarefa.idTarefa);
+        }
         notifyListeners();
         return true;
       }

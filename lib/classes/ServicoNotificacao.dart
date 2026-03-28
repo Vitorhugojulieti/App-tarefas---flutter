@@ -56,7 +56,6 @@ class ServicoNotificacao {
   // }
 
   agendarNotificacao(Tarefa tarefa) {
-    //final date = DateTime.now().add(duration);
     final List<String> horaMin = tarefa.hora.split(':');
 
     final data = DateTime(

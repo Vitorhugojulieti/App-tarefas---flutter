@@ -3,6 +3,7 @@ import '../components/ListaTarefas.dart';
 import 'package:provider/provider.dart';
 import 'package:projeto_despesas/providers/TarefaProvider.dart';
 import '../components/Calendario.dart';
+import '../models/Tarefa.dart';
 
 class Tarefas extends StatefulWidget {
   Tarefas();

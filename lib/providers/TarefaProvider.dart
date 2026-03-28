@@ -32,19 +32,30 @@ class Tarefaprovider with ChangeNotifier {
       );
       final listaResponse = response.data['items'];
       for (var t in listaResponse) {
-              debugPrint('teste aq');
-
         if (t['idtarefa'] != null &&
             t['descricao'] != null &&
             t['hora'] != null &&
             t['data_tarefa'] != null &&
             t['concluido'] != null ) {
-            
+          // hora
+          // final horaMinuto = t['hora'].toString().split(':');
+          // final hora = int.parse(horaMinuto[0]);            
+          // final minuto = int.parse(horaMinuto[0]);      
+           final data = formato.parse(t['data_tarefa']);
+          // final dataTarefa = DateTime(
+          //  data.year,
+          //  data.month,
+          //  data.day,
+          //  hora,
+          //  minuto
+          // );    
+          // debugPrint(dataTarefa.toString()); 
+          // debugPrint(t['hora'].toString()); 
             //&&t['idusuario'] != null
           Tarefa tarefa = Tarefa(
             id: t['idtarefa'],
             descricao: t['descricao'],
-            data: formato.parse(t['data_tarefa']),
+            data: data,
             hora: t['hora'],
             porcentagemConcluida:t['porcentagem'] ?? 0
           );
@@ -57,6 +68,12 @@ class Tarefaprovider with ChangeNotifier {
         }
       }
       tarefasAgrupadas = agrupaTarefas(tarefas);
+      DateTime hoje = DateTime.now();
+      filtraPorDia(DateTime(
+        hoje.year,
+        hoje.month,
+        hoje.day
+      ));
       isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -65,6 +82,8 @@ class Tarefaprovider with ChangeNotifier {
   }
 
   void filtraPorDia(DateTime dia) {
+    debugPrint('acesspo');
+    debugPrint(tarefasAgrupadas.toString());
     diaSelecionado = dia;
     tarefasAgrupadasDia = tarefasAgrupadas[dia] ?? [];
     notifyListeners();
@@ -103,7 +122,7 @@ class Tarefaprovider with ChangeNotifier {
           "idusuario": idUsuario,
           "descricao": tarefa.descricao,
           "data_tarefa": DateFormat('yyyy-MM-dd').format(tarefa.data),
-          "hora": tarefa.hora,
+          "hora": DateFormat('HH:mm').format(tarefa.data),
         },
       );
       debugPrint(response.data.toString());

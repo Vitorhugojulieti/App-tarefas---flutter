@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 class Tarefacomponent extends StatelessWidget {
   Tarefacomponent(this.tr);
   final Tarefa tr;
+  String _tag = '';
+  var _cor = Colors.greenAccent;
   _abrirModalAddTarefa(BuildContext context) {
     Navigator.push(
       context,
@@ -21,6 +23,15 @@ class Tarefacomponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(tr.porcentagemConcluida == 100 && tr.concluido){
+      _tag = 'Concluida';
+    }else if(tr.porcentagemConcluida > 0){
+      _tag = 'Em andamento';
+      _cor = Colors.orangeAccent;
+    }else{
+      _tag = 'Não iniciada';
+      _cor = Colors.redAccent;
+    }
     return GestureDetector(
       onTap: () {
         debugPrint(tr.id.toString());
@@ -33,7 +44,7 @@ class Tarefacomponent extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 left: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: _cor,
                   style: BorderStyle.solid,
                   width: 5,
                 ),
@@ -81,7 +92,10 @@ class Tarefacomponent extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      tr.concluido
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                           tr.concluido
                           ? Text(
                               tr.descricao,
                               style: TextStyle(
@@ -99,6 +113,16 @@ class Tarefacomponent extends StatelessWidget {
                                 fontSize: 15,
                               ),
                             ),
+                            Container(
+                              child: Text(_tag,style: TextStyle(fontSize: 12,color: Colors.white),),
+                              decoration: BoxDecoration(
+                                color: _cor,
+                                borderRadius: BorderRadius.all(Radius.circular(10))
+                              ),
+                              padding: EdgeInsets.all(4),
+                            )
+                        ],
+                      ),
                       SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -107,7 +131,7 @@ class Tarefacomponent extends StatelessWidget {
                           Text(DateFormat('dd-MM-yyyy').format(tr.data!)),
                           SizedBox(width: 15),
                           Icon(Icons.access_time_rounded),
-                          Text(tr.hora),
+                          Text(DateFormat('HH:mm').format(tr.data)),
                         ],
                       ),
                       SizedBox(height: 5),
@@ -116,6 +140,7 @@ class Tarefacomponent extends StatelessWidget {
                           Expanded(
                             child: LinearProgressIndicator(
                               value: tr.porcentagemConcluida / 100,
+                              color: _cor,
                             ),
                           ),
                           SizedBox(width: 10),

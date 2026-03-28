@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_despesas/models/Tarefa.dart';
+import 'package:projeto_despesas/screens/MeusDados.dart';
 import 'package:projeto_despesas/screens/Tarefas.dart';
 import 'package:projeto_despesas/screens/login_screen.dart';
 import '../screens/TarefasConcluidas.dart';
@@ -21,34 +22,25 @@ class _HomeScreen extends State<HomeScreen>{
     showModalBottomSheet(
       context: context,
        builder: (ctx){
-        return ModalAddTarefa(null);
+        return ModalAddTarefa();
        }
       );
   }
 
   int _paginaAtual = 0;
-
  
   @override
   Widget build(BuildContext context){
     final List<Widget> _paginas = [
         Tarefas(),
         Tarefasconcluidas(),
-        Tarefasconcluidas(),
+        MeusDados(),
       ];
       
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        // title: 
-        //   Text(
-        //     'Minhas tarefas',
-        //     style: TextStyle(
-        //       color: Colors.white
-        //     ),
-        //   ),
-        // centerTitle: true,
         leading:Container(
           padding: EdgeInsetsGeometry.all(10),
           alignment: Alignment.centerLeft,

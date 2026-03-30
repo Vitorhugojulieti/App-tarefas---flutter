@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_despesas/components/ModalAddSubTarefa.dart';
 import 'package:projeto_despesas/components/SubtarefaComponent.dart';
 import 'package:projeto_despesas/models/Subtarefa.dart';
 import '../models/Tarefa.dart';
 import 'package:provider/provider.dart';
 import '../providers/SubtarefaProvider.dart';
+import 'package:projeto_despesas/providers/TarefaProvider.dart';
 import 'package:intl/intl.dart';
 
 class TarefaDetalhe extends StatefulWidget {
@@ -64,64 +66,72 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
       });
     }
   }
-
-  _addSubTarefa(BuildContext context) async {
-    final bool retorno = await context.read<Subtarefaprovider>().addSubtarefa(
-      context,
-      new Subtarefa(
-        id: 0,
-        descricao: _descricaoSubtarefaController.text,
-        concluido: false,
-        idTarefa: widget.tarefa.id,
-      ),
+    _abrirModalAddSubTarefa(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return ModalAddSubTarefa(widget.tarefa.id);
+      },
     );
-
-    if (retorno) {
-      if (_porcentagem.toInt() == 100) {
-        debugPrint('aqui');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Tarefa concluida com sucesso!',
-              style: TextStyle(color: Colors.white),
-            ),
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 3),
-            backgroundColor: Colors.greenAccent,
-          ),
-        );
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Subtarefa adicionada com sucesso!',
-              style: TextStyle(color: Colors.white),
-            ),
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 3),
-            backgroundColor: Colors.greenAccent,
-          ),
-        );
-      }
-      _descricaoSubtarefaController.text = '';
-      setState(() {
-        _visivel = false;
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Erro ao adicionar subtarefa!',
-            style: TextStyle(color: Colors.white),
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-    }
   }
+
+  // _addSubTarefa(BuildContext context) async {
+  //   final bool retorno = await context.read<Subtarefaprovider>().addSubtarefa(
+  //     context,
+  //     new Subtarefa(
+  //       id: 0,
+  //       descricao: _descricaoSubtarefaController.text,
+  //       concluido: false,
+  //       idTarefa: widget.tarefa.id,
+  //     ),
+  //   );
+
+  //   if (retorno) {
+  //     if (_porcentagem.toInt() == 100) {
+  //       debugPrint('aqui');
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(
+  //             'Tarefa concluida com sucesso!',
+  //             style: TextStyle(color: Colors.white),
+  //           ),
+  //           behavior: SnackBarBehavior.floating,
+  //           duration: Duration(seconds: 3),
+  //           backgroundColor: Colors.greenAccent,
+  //         ),
+  //       );
+  //       Navigator.pop(context);
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(
+  //             'Subtarefa adicionada com sucesso!',
+  //             style: TextStyle(color: Colors.white),
+  //           ),
+  //           behavior: SnackBarBehavior.floating,
+  //           duration: Duration(seconds: 3),
+  //           backgroundColor: Colors.greenAccent,
+  //         ),
+  //       );
+  //     }
+  //     _descricaoSubtarefaController.text = '';
+  //     setState(() {
+  //       _visivel = false;
+  //     });
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text(
+  //           'Erro ao adicionar subtarefa!',
+  //           style: TextStyle(color: Colors.white),
+  //         ),
+  //         behavior: SnackBarBehavior.floating,
+  //         duration: Duration(seconds: 3),
+  //         backgroundColor: Colors.redAccent,
+  //       ),
+  //     );
+  //   }
+  // }
 
   @override
   void initState() {
@@ -134,7 +144,11 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
       _dataController.text = DateFormat(
         'dd/MM/yyyy',
       ).format(widget.tarefa.data);
-      _horaController.text = widget.tarefa.hora;
+      _dataTarefa = widget.tarefa.data;
+      _horaController.text = DateFormat(
+        'HH:mm',
+      ).format(widget.tarefa.data); // widget.tarefa.hora;
+      debugPrint('Data no detalhe : ${widget.tarefa.data}');
 
       if (widget.tarefa.porcentagemConcluida == 100 &&
           widget.tarefa.concluido) {
@@ -191,6 +205,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                       children: [
                         TextField(
                           controller: _descricaoController,
+                          readOnly: widget.tarefa.concluido,
                           decoration: InputDecoration(
                             labelText: 'Descrição',
                             filled: true,
@@ -236,7 +251,21 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                           ),
                           readOnly: true,
                           onTap: () {
-                            _selecionarData();
+                            if (widget.tarefa.concluido) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'A tarefa ja foi concluida!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: Duration(seconds: 3),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            } else {
+                              _selecionarData();
+                            }
                           },
                           controller: _dataController,
                         ),
@@ -265,7 +294,21 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                           controller: _horaController,
                           readOnly: true,
                           onTap: () {
-                            _selecionarHora();
+                            if (widget.tarefa.concluido) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'A tarefa ja foi concluida!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: Duration(seconds: 3),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            } else {
+                              _selecionarHora();
+                            }
                           },
                         ),
                         SizedBox(height: 12),
@@ -311,45 +354,18 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                                   itemBuilder: (ctx, index) {
                                     return SubtarefaComponent(
                                       subtarefas[index],
+                                      widget.tarefa.concluido,
                                     );
                                   },
                                 ),
                               )
                             : Text('Nenhuma subtarefa cadastrada!'),
-                        Visibility(
-                          visible: _visivel,
-                          child: Form(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _descricaoSubtarefaController,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.check, color: Colors.green),
-                                  onPressed: () {
-                                    _addSubTarefa(context);
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.cancel, color: Colors.red),
-                                  onPressed: () {
-                                    setState(() {
-                                      _visivel = false;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                         widget.tarefa.concluido
                             ? SizedBox(height: 10)
                             : TextButton.icon(
                                 onPressed: () {
                                   setState(() {
-                                    _visivel = true;
+                                    _abrirModalAddSubTarefa(context);
                                   });
                                 },
                                 label: Text('Adicionar subtarefa'),
@@ -371,7 +387,40 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                       spacing: 12,
                       children: [
                         TextButton.icon(
-                          onPressed: null,
+                          onPressed: () async {
+                            widget.tarefa.descricao = _descricaoController.text;
+                            widget.tarefa.data = _dataTarefa!;
+                            widget.tarefa.hora = _horaController.text;
+                            final provider = Provider.of<Tarefaprovider>(
+                              context,
+                              listen: false,
+                            );
+                            final bool retorno = await provider.atualizaTarefa(
+                              widget.tarefa,
+                            );
+
+                            if (retorno) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Tarefa atualizada com sucesso!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor: Colors.greenAccent,
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Erro ao atualizar tarefa!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            }
+                          },
                           label: Text(
                             'Editar',
                             style: TextStyle(color: Colors.white),
@@ -384,7 +433,38 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                           ),
                         ),
                         TextButton.icon(
-                          onPressed: null,
+                          onPressed: () async {
+                            final provider = Provider.of<Tarefaprovider>(
+                              context,
+                              listen: false,
+                            );
+                            final bool retorno = await provider.onDelete(
+                              widget.tarefa.id,
+                            );
+
+                            if (retorno) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Tarefa excluida com sucesso!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor: Colors.greenAccent,
+                                ),
+                              );
+                              Navigator.pop(context);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Erro ao excluir tarefa!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            }
+                          },
                           label: Text(
                             'Excluir',
                             style: TextStyle(color: Colors.white),
@@ -396,7 +476,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                         ),
                       ],
                     )
-                  : Text('Tarefa Concluida'),
+                  : SizedBox(height: 5),
             ),
           ],
         ),

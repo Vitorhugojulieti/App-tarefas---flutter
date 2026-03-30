@@ -16,9 +16,7 @@ class _Tarefasconcluidas extends State<Tarefasconcluidas> {
     Future.microtask(() {
       final provider = context.read<Tarefaprovider>();
       debugPrint(provider.tarefasAgrupadas.toString());
-      provider.carregarTarefas(
-        concluido: 'S',
-      ); 
+      provider.carregarTarefas(concluido: 'S');
     });
   }
 
@@ -27,18 +25,32 @@ class _Tarefasconcluidas extends State<Tarefasconcluidas> {
     final provider = context.watch<Tarefaprovider>();
     debugPrint(provider.tarefasAgrupadas.toString());
     return provider.isLoading
-        ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
+        ? Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          )
         : Container(
             padding: EdgeInsetsGeometry.all(10),
             child: Center(
-              child: Column(
-                children: [
-                  SizedBox(height: 20),
-                  Expanded(
-                    child: ListatarefasAgrupadas(provider.tarefasAgrupadas),
-                  ),
-                ],
-              ),
+              child: provider.tarefasAgrupadas.isEmpty
+                  ? Text(
+                      'Nenhuma tarefa concluida',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        SizedBox(height: 20),
+                        Expanded(
+                          child: ListatarefasAgrupadas(
+                            provider.tarefasAgrupadas,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
           );
   }

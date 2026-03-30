@@ -39,15 +39,15 @@ class _FormLogin extends State<Formlogin> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    child: Image.asset('../assets/images/task_icon.png'),
-                  ),
+                  // Container(
+                  //   width: MediaQuery.of(context).size.width * 0.2,
+                  //   child: Image.asset('../assets/images/task_icon.png'),
+                  // ),
+                  Icon(Icons.calendar_month,color: Theme.of(context).colorScheme.primary,size: 80),
                   Text(
                     'Login',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20),
                   TextField(
                     decoration: InputDecoration(
                       labelText: 'Email',
@@ -107,7 +107,6 @@ class _FormLogin extends State<Formlogin> {
                     obscureText: !senhaVisivel,
                     controller: _senhaController,
                   ),
-                  SizedBox(height: 10),
                   //Expanded(
                   //   child:
                 TextButton.icon(
@@ -165,7 +164,6 @@ class _FormLogin extends State<Formlogin> {
                       label: Text('Entrar',style: TextStyle(color: Colors.white)),
                       icon: Icon(Icons.login,color: Colors.white,),
                     ),
-                  SizedBox(height: 25),
                   TextButton(
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(

@@ -5,8 +5,9 @@ import '../providers/SubtarefaProvider.dart';
 import '../providers/TarefaProvider.dart';
 
 class SubtarefaComponent extends StatelessWidget {
-  SubtarefaComponent(this.subtarefa);
+  SubtarefaComponent(this.subtarefa, this.tarefaConcluida);
   Subtarefa subtarefa;
+  bool tarefaConcluida;
 
   _removeSubTarefa(BuildContext context, int idSubtarefa) async {
     final bool retorno = await context
@@ -41,40 +42,11 @@ class SubtarefaComponent extends StatelessWidget {
   }
 
   _checkSubTarefa(BuildContext context, int idSubtarefa) async {
-    final provider = context.read<Subtarefaprovider>();
-    final bool retorno = await provider.checkSubtarefa(context, idSubtarefa);
-
-    if (retorno) {
-      if (provider.porcentagem.toInt() == 100) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Tarefa concluida com sucesso!',
-              style: TextStyle(color: Colors.white),
-            ),
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 3),
-            backgroundColor: Colors.greenAccent,
-          ),
-        );
-        Navigator.pop(context);
-      }
+    if (tarefaConcluida) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Subtarfa concluida com sucesso!',
-            style: TextStyle(color: Colors.white),
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.greenAccent,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Erro ao concluir subtarefa!',
+            'A tarefa ja foi concluida!',
             style: TextStyle(color: Colors.white),
           ),
           behavior: SnackBarBehavior.floating,
@@ -82,6 +54,49 @@ class SubtarefaComponent extends StatelessWidget {
           backgroundColor: Colors.redAccent,
         ),
       );
+    } else {
+      final provider = context.read<Subtarefaprovider>();
+      final bool retorno = await provider.checkSubtarefa(context, idSubtarefa);
+
+      if (retorno) {
+        if (provider.porcentagem.toInt() == 100) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Tarefa concluida com sucesso!',
+                style: TextStyle(color: Colors.white),
+              ),
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.greenAccent,
+            ),
+          );
+          Navigator.pop(context);
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Subtarfa concluida com sucesso!',
+              style: TextStyle(color: Colors.white),
+            ),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Erro ao concluir subtarefa!',
+              style: TextStyle(color: Colors.white),
+            ),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 
@@ -99,12 +114,14 @@ class SubtarefaComponent extends StatelessWidget {
             },
           ),
           Expanded(child: Text(subtarefa.descricao)),
-          IconButton(
-            onPressed: () {
-              _removeSubTarefa(context, subtarefa.id);
-            },
-            icon: Icon(Icons.cancel, color: Colors.red),
-          ),
+          tarefaConcluida
+              ? SizedBox(width: 10)
+              : IconButton(
+                  onPressed: () {
+                    _removeSubTarefa(context, subtarefa.id);
+                  },
+                  icon: Icon(Icons.cancel, color: Colors.red),
+                ),
         ],
       ),
     );

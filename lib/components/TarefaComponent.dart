@@ -23,12 +23,12 @@ class Tarefacomponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(tr.porcentagemConcluida == 100 && tr.concluido){
+    if (tr.porcentagemConcluida == 100 && tr.concluido) {
       _tag = 'Concluida';
-    }else if(tr.porcentagemConcluida > 0){
+    } else if (tr.porcentagemConcluida > 0) {
       _tag = 'Em andamento';
       _cor = Colors.orangeAccent;
-    }else{
+    } else {
       _tag = 'Não iniciada';
       _cor = Colors.redAccent;
     }
@@ -69,22 +69,38 @@ class Tarefacomponent extends StatelessWidget {
                 Checkbox(
                   value: tr.concluido,
                   onChanged: (value) async {
-                    final provider = Provider.of<Tarefaprovider>(
-                      context,
-                      listen: false,
-                    );
-                    final bool retorno = await provider.onCheck(tr.id);
-
-                    if (retorno) {
+                    if (tr.concluido) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            'Tarefa marcada com sucesso!',
+                            'Tarefa ja foi concluida!',
                             style: TextStyle(color: Colors.white),
                           ),
-                          backgroundColor: Colors.greenAccent,
+                          backgroundColor: Colors.redAccent,
+                          duration: Duration(seconds: 3),
+                          behavior: SnackBarBehavior.floating,
                         ),
                       );
+                    } else {
+                      final provider = Provider.of<Tarefaprovider>(
+                        context,
+                        listen: false,
+                      );
+                      final bool retorno = await provider.onCheck(tr.id);
+
+                      if (retorno) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Tarefa marcada com sucesso!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.greenAccent,
+                            duration: Duration(seconds: 3),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
                     }
                   },
                 ),
@@ -95,42 +111,60 @@ class Tarefacomponent extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                           tr.concluido
-                          ? Text(
-                              tr.descricao,
+                          tr.concluido
+                              ? Text(
+                                  tr.descricao,
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    decoration: TextDecoration.lineThrough,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                )
+                              : Text(
+                                  tr.descricao,
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                          Container(
+                            child: Text(
+                              _tag,
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                decoration: TextDecoration.lineThrough,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            )
-                          : Text(
-                              tr.descricao,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: 12,
+                                color: Colors.white,
                               ),
                             ),
-                            Container(
-                              child: Text(_tag,style: TextStyle(fontSize: 12,color: Colors.white),),
-                              decoration: BoxDecoration(
-                                color: _cor,
-                                borderRadius: BorderRadius.all(Radius.circular(10))
+                            decoration: BoxDecoration(
+                              color: _cor,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
                               ),
-                              padding: EdgeInsets.all(4),
-                            )
+                            ),
+                            padding: EdgeInsets.all(4),
+                          ),
                         ],
                       ),
                       SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(Icons.calendar_month),
-                          Text(DateFormat('dd-MM-yyyy').format(tr.data!)),
+                          Icon(
+                            Icons.calendar_month,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          Text(DateFormat('dd/MM/yyyy').format(tr.data!)),
                           SizedBox(width: 15),
-                          Icon(Icons.access_time_rounded),
+                          Icon(
+                            Icons.access_time_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                           Text(DateFormat('HH:mm').format(tr.data)),
                         ],
                       ),

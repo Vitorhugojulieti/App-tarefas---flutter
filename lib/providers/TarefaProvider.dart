@@ -41,17 +41,16 @@ class Tarefaprovider with ChangeNotifier {
           // final horaMinuto = t['hora'].toString().split(':');
           // final hora = int.parse(horaMinuto[0]);            
           // final minuto = int.parse(horaMinuto[0]);      
-           final data = formato.parse(t['data_tarefa']);
-          // final dataTarefa = DateTime(
+          final data = formato.parse(t['data_tarefa']);
+          // debugPrint(data.toString());
+          // DateTime dataTarefa = DateTime(
           //  data.year,
           //  data.month,
           //  data.day,
           //  hora,
           //  minuto
           // );    
-          // debugPrint(dataTarefa.toString()); 
-          // debugPrint(t['hora'].toString()); 
-            //&&t['idusuario'] != null
+          // debugPrint('Data no provider : ${dataTarefa}');
           Tarefa tarefa = Tarefa(
             id: t['idtarefa'],
             descricao: t['descricao'],
@@ -59,6 +58,8 @@ class Tarefaprovider with ChangeNotifier {
             hora: t['hora'],
             porcentagemConcluida:t['porcentagem'] ?? 0
           );
+          debugPrint('Data na tarefa : ${tarefa.data}');
+
           tarefa.concluido = t['concluido'] == "S" ? true : false;
           tarefa.idUsuario = t['idusuario'];
           tarefas.add(tarefa);
@@ -82,7 +83,6 @@ class Tarefaprovider with ChangeNotifier {
   }
 
   void filtraPorDia(DateTime dia) {
-    debugPrint('acesspo');
     debugPrint(tarefasAgrupadas.toString());
     diaSelecionado = dia;
     tarefasAgrupadasDia = tarefasAgrupadas[dia] ?? [];
@@ -122,7 +122,7 @@ class Tarefaprovider with ChangeNotifier {
           "idusuario": idUsuario,
           "descricao": tarefa.descricao,
           "data_tarefa": DateFormat('yyyy-MM-dd').format(tarefa.data),
-          "hora": DateFormat('HH:mm').format(tarefa.data),
+          "hora": tarefa.hora // DateFormat('HH:mm').format(tarefa.data),
         },
       );
       debugPrint(response.data.toString());
@@ -134,8 +134,9 @@ class Tarefaprovider with ChangeNotifier {
           final List<Tarefa> lista = [tarefa];
           tarefasAgrupadas[tarefa.data] = lista;
         }
+        debugPrint('Data no provider: ${tarefa.data}');
         // criar notificacao
-        context.read<ServicoNotificacao>().agendarNotificacao(tarefa);
+        context.read<ServicoNotificacao>().agendarNotificacao(context,tarefa);
         notifyListeners();
         return true;
       }
@@ -208,7 +209,7 @@ class Tarefaprovider with ChangeNotifier {
           "concluido": tarefa.concluido == false ? 'N' : 'S',
           "descricao":tarefa.descricao,
           "data_tarefa": DateFormat('yyyy-MM-dd').format(tarefa.data),
-          "hora":tarefa.hora,
+          "hora":DateFormat('HH:mm').format(tarefa.data),
           "porcentagem":tarefa.porcentagemConcluida
         },
       );

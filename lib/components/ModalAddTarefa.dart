@@ -52,6 +52,7 @@ class _ModalAddTarefa extends State<ModalAddTarefa> {
           hora.hour,
           hora.minute,
         );
+        debugPrint('Data tarefa no add: ${_dataTarefa}');
         _horaController.text = '${hora.hour}:${hora.minute}';
       });
     }
@@ -82,7 +83,7 @@ class _ModalAddTarefa extends State<ModalAddTarefa> {
           id: 0, //quando buscar o id do banco n precis mais add
           descricao: _descricaoController.text,
           data: _dataTarefa!,
-          hora: '', //_horaController.text,
+          hora: _horaController.text,
           porcentagemConcluida: 0,
         ),
       );

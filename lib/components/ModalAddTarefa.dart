@@ -16,6 +16,7 @@ class _ModalAddTarefa extends State<ModalAddTarefa> {
   final _dataController = new TextEditingController();
   final _horaController = new TextEditingController();
   DateTime? _dataTarefa = null;
+  DateTime? _dataNotificacao = null;
   bool _inputAberto = false;
 
   Future<void> _selecionarData() async {
@@ -45,14 +46,13 @@ class _ModalAddTarefa extends State<ModalAddTarefa> {
 
     if (hora != null && _dataTarefa != null) {
       setState(() {
-        _dataTarefa = DateTime(
+        _dataNotificacao = DateTime(
           _dataTarefa!.year,
           _dataTarefa!.month,
           _dataTarefa!.day,
           hora.hour,
           hora.minute,
         );
-        debugPrint('Data tarefa no add: ${_dataTarefa}');
         _horaController.text = '${hora.hour}:${hora.minute}';
       });
     }
@@ -85,6 +85,7 @@ class _ModalAddTarefa extends State<ModalAddTarefa> {
           data: _dataTarefa!,
           hora: _horaController.text,
           porcentagemConcluida: 0,
+          dataNotificacao : _dataNotificacao
         ),
       );
       if (resultado) {

@@ -23,7 +23,7 @@ class Tarefacomponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (tr.porcentagemConcluida == 100 && tr.concluido) {
+    if (tr.porcentagemConcluida == 100 || tr.concluido) {
       _tag = 'Concluida';
     } else if (tr.porcentagemConcluida > 0) {
       _tag = 'Em andamento';
@@ -137,14 +137,14 @@ class Tarefacomponent extends StatelessWidget {
                             child: Text(
                               _tag,
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 10,
                                 color: Colors.white,
                               ),
                             ),
                             decoration: BoxDecoration(
                               color: _cor,
                               borderRadius: BorderRadius.all(
-                                Radius.circular(10),
+                                Radius.circular(8),
                               ),
                             ),
                             padding: EdgeInsets.all(4),

@@ -90,6 +90,7 @@ class _ModalAddSubTarefa extends State<ModalAddSubTarefa> {
       body: ListView(
         children: [
           Container(
+            height: MediaQuery.of(context).size.height * 0.2,
             padding: EdgeInsets.all(12),
             color: Theme.of(context).colorScheme.secondary,
             child: Center(
@@ -123,6 +124,7 @@ class _ModalAddSubTarefa extends State<ModalAddSubTarefa> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

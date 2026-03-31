@@ -7,10 +7,14 @@ import 'package:provider/provider.dart';
 import './screens/login_screen.dart';
 import './screens/home_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('pt_BR', null);
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('America/Sao_Paulo'));
   runApp(
     MultiProvider(
       providers: [

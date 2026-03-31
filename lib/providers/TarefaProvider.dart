@@ -38,25 +38,25 @@ class Tarefaprovider with ChangeNotifier {
             t['data_tarefa'] != null &&
             t['concluido'] != null ) {
           // hora
-          // final horaMinuto = t['hora'].toString().split(':');
-          // final hora = int.parse(horaMinuto[0]);            
-          // final minuto = int.parse(horaMinuto[0]);      
+          final horaMinuto = t['hora'].toString().split(':');
+          final TimeOfDay horaNotificacao = new TimeOfDay(hour: int.parse(horaMinuto[0]), minute: int.parse(horaMinuto[0])); 
           final data = formato.parse(t['data_tarefa']);
           // debugPrint(data.toString());
-          // DateTime dataTarefa = DateTime(
-          //  data.year,
-          //  data.month,
-          //  data.day,
-          //  hora,
-          //  minuto
-          // );    
-          // debugPrint('Data no provider : ${dataTarefa}');
+          DateTime dataNotificacao = DateTime(
+           data.year,
+           data.month,
+           data.day,
+           horaNotificacao.hour,
+           horaNotificacao.minute
+          );    
+          debugPrint('Data no provider : ${dataNotificacao}');
           Tarefa tarefa = Tarefa(
             id: t['idtarefa'],
             descricao: t['descricao'],
             data: data,
             hora: t['hora'],
-            porcentagemConcluida:t['porcentagem'] ?? 0
+            porcentagemConcluida:t['porcentagem'] ?? 0,
+            dataNotificacao: dataNotificacao
           );
           debugPrint('Data na tarefa : ${tarefa.data}');
 
@@ -136,8 +136,9 @@ class Tarefaprovider with ChangeNotifier {
         }
         debugPrint('Data no provider: ${tarefa.data}');
         // criar notificacao
-        context.read<ServicoNotificacao>().agendarNotificacao(context,tarefa);
         notifyListeners();
+
+        context.read<ServicoNotificacao>().agendarNotificacao(context,tarefa);
         return true;
       }
       return false;

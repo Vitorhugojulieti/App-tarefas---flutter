@@ -327,7 +327,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                   )
                 : Expanded(
                     flex: 3,
-                    child: Column(
+                    child: ListView(
                       children: [
                         subtarefas.isNotEmpty
                             ? Text('Subtarefas')
@@ -359,7 +359,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                                   },
                                 ),
                               )
-                            : Text('Nenhuma subtarefa cadastrada!'),
+                            : Text('Nenhuma subtarefa cadastrada!',textAlign: TextAlign.center,),
                         widget.tarefa.concluido
                             ? SizedBox(height: 10)
                             : TextButton.icon(

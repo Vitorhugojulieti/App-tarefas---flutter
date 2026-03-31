@@ -26,7 +26,7 @@ class _FormLogin extends State<Formlogin> {
             ).size.width, // pega largura total da tela e usa 90%
             height:
                 MediaQuery.of(context).size.height *
-                0.8, //pega altura total da tela e usa 60%
+                0.6, //pega altura total da tela e usa 60%
             padding: EdgeInsets.all(30),
             decoration: BoxDecoration(
               color: Colors.white,

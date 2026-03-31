@@ -29,15 +29,15 @@ class ServicoNotificacao {
   }
 
   _setupNotifications() async {
-    await _defineTimezone();
+   // await _defineTimezone();
     await _inicializaNotificacoes();
   }
 
-  Future<void> _defineTimezone() async {
-    tz.initializeTimeZones();
-    // Define manualmente o timezone (Brasil)
-    tz.setLocalLocation(tz.getLocation('America/Sao_Paulo'));
-  }
+  // Future<void> _defineTimezone() async {
+  //   tz.initializeTimeZones();
+  //   // Define manualmente o timezone (Brasil)
+  //   tz.setLocalLocation(tz.getLocation('America/Sao_Paulo'));
+  // }
 
   _inicializaNotificacoes() async {
     const android = AndroidInitializationSettings(
@@ -57,11 +57,12 @@ class ServicoNotificacao {
 
   agendarNotificacao(BuildContext context,Tarefa tarefa) {
     try {
+      debugPrint('data no servico : ${tarefa.data}');
       localNotificationsPlugin.zonedSchedule(
         tarefa.id,
         tarefa.descricao,
         tarefa.hora,
-        tz.TZDateTime.from(tarefa.data, tz.local),
+        tz.TZDateTime.from(tarefa.dataNotificacao!, tz.local),
         NotificationDetails(android: androidDetails),
         //payload: notification.payload,
         androidAllowWhileIdle: true,

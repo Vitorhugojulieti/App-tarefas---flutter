@@ -38,34 +38,31 @@ class Tarefaprovider with ChangeNotifier {
             t['data_tarefa'] != null &&
             t['concluido'] != null ) {
           // hora
-          final horaMinuto = t['hora'].toString().split(':');
-          final TimeOfDay horaNotificacao = new TimeOfDay(hour: int.parse(horaMinuto[0]), minute: int.parse(horaMinuto[0])); 
+          // final horaMinuto = t['hora'].toString().split(':');
+          // final TimeOfDay horaNotificacao = new TimeOfDay(hour: int.parse(horaMinuto[0]), minute: int.parse(horaMinuto[0])); 
           final data = formato.parse(t['data_tarefa']);
-          // debugPrint(data.toString());
-          DateTime dataNotificacao = DateTime(
-           data.year,
-           data.month,
-           data.day,
-           horaNotificacao.hour,
-           horaNotificacao.minute
-          );    
-          debugPrint('Data no provider : ${dataNotificacao}');
+          // // debugPrint(data.toString());
+          // DateTime dataNotificacao = DateTime(
+          //  data.year,
+          //  data.month,
+          //  data.day,
+          //  horaNotificacao.hour,
+          //  horaNotificacao.minute
+          // );    
           Tarefa tarefa = Tarefa(
             id: t['idtarefa'],
             descricao: t['descricao'],
             data: data,
             hora: t['hora'],
             porcentagemConcluida:t['porcentagem'] ?? 0,
-            dataNotificacao: dataNotificacao
+            dataNotificacao: DateTime.now()
           );
-          debugPrint('Data na tarefa : ${tarefa.data}');
 
           tarefa.concluido = t['concluido'] == "S" ? true : false;
           tarefa.idUsuario = t['idusuario'];
           tarefas.add(tarefa);
         }else{
          debugPrint(t['idtarefa'].toString());
-
         }
       }
       tarefasAgrupadas = agrupaTarefas(tarefas);

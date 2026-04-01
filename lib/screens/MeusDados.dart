@@ -17,20 +17,20 @@ class _MeusDados extends State<MeusDados> {
   bool senhaVisivel = false;
   bool confirmarSenhaVisivel = false;
 
+  void _carregar() async {
+    final provider = context.read<Usuarioprovider>();
+    await provider.carregarDados();
+  }
+
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    setState(() {
-      final provider = context.read<Usuarioprovider>();
-      provider.carregarDados();
-      _email = provider.email;
-      _tarefasConcluidas = provider.totalTarefasConcluidas;
-      _tarefasPendentes = provider.totalTarefasPendentes;
-    });
+    _carregar();
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<Usuarioprovider>();
     return Padding(
       padding: EdgeInsetsGeometry.all(12),
       child: Column(
@@ -43,13 +43,13 @@ class _MeusDados extends State<MeusDados> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Icon(Icons.account_circle, size: 130, color: Colors.grey),
-                Text(_email, style: TextStyle(fontSize: 20)),
+                Text(provider.email, style: TextStyle(fontSize: 20)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       child: Text(
-                        'Tarefas Concluidas: ${_tarefasConcluidas}',
+                        'Tarefas Concluidas: ${provider.totalTarefasConcluidas}',
                         style: TextStyle(color: Colors.white),
                       ),
                       decoration: BoxDecoration(
@@ -61,7 +61,7 @@ class _MeusDados extends State<MeusDados> {
                     SizedBox(width: 10),
                     Container(
                       child: Text(
-                        'Tarefas pendentes: ${_tarefasPendentes}',
+                        'Tarefas pendentes: ${provider.totalTarefasPendentes}',
                         style: TextStyle(color: Colors.white),
                       ),
                       decoration: BoxDecoration(

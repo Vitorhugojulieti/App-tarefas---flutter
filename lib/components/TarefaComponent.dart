@@ -11,7 +11,7 @@ class Tarefacomponent extends StatelessWidget {
   final Tarefa tr;
   String _tag = '';
   var _cor = Colors.greenAccent;
-  _abrirModalAddTarefa(BuildContext context) {
+  _abrirModalDetalhe(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -35,7 +35,7 @@ class Tarefacomponent extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         debugPrint(tr.id.toString());
-        _abrirModalAddTarefa(context);
+        _abrirModalDetalhe(context);
       },
       child: Column(
         children: [
@@ -165,7 +165,7 @@ class Tarefacomponent extends StatelessWidget {
                             Icons.access_time_rounded,
                             color: Theme.of(context).colorScheme.primary,
                           ),
-                          Text(DateFormat('HH:mm').format(tr.data)),
+                          Text(tr.hora),
                         ],
                       ),
                       SizedBox(height: 5),

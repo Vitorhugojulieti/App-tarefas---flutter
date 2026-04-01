@@ -150,7 +150,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
       ).format(widget.tarefa.data); // widget.tarefa.hora;
       debugPrint('Data no detalhe : ${widget.tarefa.data}');
 
-      if (widget.tarefa.porcentagemConcluida == 100 &&
+      if (widget.tarefa.porcentagemConcluida == 100 ||
           widget.tarefa.concluido) {
         _tag = 'Concluida';
       } else if (widget.tarefa.porcentagemConcluida > 0) {
@@ -189,6 +189,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
         ),
         iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
       ),
+      resizeToAvoidBottomInset: false, // testar
       body: Padding(
         padding: EdgeInsetsGeometry.all(12),
         child: Column(
@@ -327,7 +328,7 @@ class _TarefaDetalhe extends State<TarefaDetalhe> {
                   )
                 : Expanded(
                     flex: 3,
-                    child: ListView(
+                    child: Column(
                       children: [
                         subtarefas.isNotEmpty
                             ? Text('Subtarefas')

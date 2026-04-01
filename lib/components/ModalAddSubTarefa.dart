@@ -34,8 +34,8 @@ class _ModalAddSubTarefa extends State<ModalAddSubTarefa> {
         new Subtarefa(
           concluido: false,
           descricao: _descricaoController.text,
-          idTarefa: 1,
-          id: 0
+          idTarefa: widget.idTarefa,
+          id: 0,
         ),
       );
       if (resultado) {
@@ -43,7 +43,7 @@ class _ModalAddSubTarefa extends State<ModalAddSubTarefa> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Tarefa cadastrada com sucesso!',
+              'Subtarefa cadastrada com sucesso!',
               style: TextStyle(color: Colors.white),
             ),
             behavior: SnackBarBehavior.floating,
@@ -52,18 +52,18 @@ class _ModalAddSubTarefa extends State<ModalAddSubTarefa> {
           ),
         );
         Navigator.of(context).pop();
-      }else{
-         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Erro ao cadastrar subtarefa!',
-            style: TextStyle(color: Colors.white),
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Erro ao cadastrar subtarefa!',
+              style: TextStyle(color: Colors.white),
+            ),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.redAccent,
           ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+        );
       }
     }
   }
@@ -71,7 +71,6 @@ class _ModalAddSubTarefa extends State<ModalAddSubTarefa> {
   _cancelar() {
     Navigator.of(context).pop();
   }
-
 
   @override
   Widget build(BuildContext context) {

@@ -15,6 +15,7 @@ class Subtarefaprovider with ChangeNotifier {
     isLoading = true;
     subtarefas.clear();
     notifyListeners();
+    debugPrint(idtarefa.toString());
 
     try {
       final dio = Dio();
@@ -51,6 +52,7 @@ class Subtarefaprovider with ChangeNotifier {
   }
 
   Future<bool> addSubtarefa(BuildContext context,Subtarefa subtarefa) async {
+    debugPrint('id sub: ${subtarefa.idTarefa}');
     try {
       final dio = new Dio();
       final response = await dio.post(
